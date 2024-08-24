@@ -1,87 +1,101 @@
-#Rock Paper Scissors game by marsian
-print("\n\n\nRock Paper Scissors by marsian83\n\npresss Ctrl+. when you feel like exitting the game.")
-input("\n\n<<PRESS ENTER TO BEGIN>>\n")
-print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+import random
+import time
 
-#Framework declaration
-from time import sleep
-from random import choice
 def game():
-    print("\n\n\n\n\n\n\n\nDecide your move, enter \"R\" for Rock, \"S\" for Scissors and \"P\"for Paper")
-    tempVal=input()
-    while tempVal != 'R' and tempVal != 'S' and tempVal != 'P' and tempVal != 'r' and tempVal != 's' and tempVal != 'p':
-        print("Decide your move, enter \"R\" for Rock, \"S\" for Scissors and \"P\"for Paper")
-        tempVal=input();
-    sleep(0.13)
-    if tempVal == "R" or tempVal == "r":
-        Pmove=1
-    elif tempVal == "P" or tempVal == "p":
-        Pmove=2
-    elif tempVal == "S" or tempVal == "s":
-        Pmove=3
+    """
+    Plays a round of Rock, Paper, Scissors.
+
+    Returns:
+        tuple: A tuple containing the CPU's move (1 for Rock, 2 for Paper, 3 for Scissors),
+               the player's move (1 for Rock, 2 for Paper, 3 for Scissors),
+               and the CPU's move as a string.
+    """
+    print("\nDecide your move: 'R' for Rock, 'S' for Scissors, 'P' for Paper")
+    player_move = input().upper()
+
+    while player_move not in ['R', 'S', 'P']:
+        print("Invalid input. Please enter 'R', 'S', or 'P'.")
+        player_move = input().upper()
+
+    cpu_move = random.choice(['R', 'S', 'P'])
+
+    return {'cpu_move': cpu_move, 'player_move': player_move}
+
+def determine_winner(cpu_move, player_move):
+    """
+    Determines the winner of a Rock, Paper, Scissors round.
+
+    Args:
+        cpu_move (str): The CPU's move ('R', 'S', or 'P').
+        player_move (str): The player's move ('R', 'S', or 'P').
+
+    Returns:
+        int: 1 if the CPU wins, 2 if the player wins, 0 if it's a draw.
+    """
+    if cpu_move == player_move:
+        return 0
+    elif (cpu_move == 'R' and player_move == 'S') or \
+         (cpu_move == 'S' and player_move == 'P') or \
+         (cpu_move == 'P' and player_move == 'R'):
+        return 1
     else:
-        print("Custom_ERROR-01 : can't recognize user's input")
-        raise SystemExit(0);
-    sleep(0.13)
-    Cmove=choice(MoveSet)
-    if Cmove == 1:
-        cpumove='Rock'
-    elif Cmove == 2:
-        cpumove='Paper'
-    elif Cmove == 3:
-        cpumove='Scissor'
-    else:
-        print("Custom_ERROR-00 : CPU's move unrecognizable")
-        raise SystemExit(0)
-    del tempVal;
-    sleep(0.038)
-    return Cmove, Pmove, cpumove
-def decisive(Cmove,Pmove):
-    if [Cmove,Pmove] == [1,3] or [Cmove,Pmove] == [2,1] or [Cmove,Pmove] == [3,2]:
-        winner=1
-    elif [Cmove,Pmove] == [1,2] or [Cmove,Pmove] == [2,3] or [Cmove,Pmove] == [3,1]:
-        winner=2
-    elif [Cmove,Pmove] == [1,1] or [Cmove,Pmove] == [2,2] or [Cmove,Pmove] == [3,3]:
-        winner=0
-    else:
-        print("Custom_ERROR-03 : Set [cpumove,playermove] was assigned an unexpected value")
-        raise SystemExit(0)
-    return winner
-def Scoreboard(winner,cm,cs,ps):
+        return 2
+
+def update_scoreboard(winner, cpu_move, player_score, cpu_score):
+    """
+    Updates the scoreboard based on the winner of a round.
+
+    Args:
+        winner (int): 1 if the CPU wins, 2 if the player wins, 0 if it's a draw.
+        cpu_move (str): The CPU's move ('R', 'S', or 'P').
+        player_score (int): The player's current score.
+        cpu_score (int): The CPU's current score.
+
+    Returns:
+        tuple: A tuple containing the updated player's score and CPU's score.
+    """
     if winner == 1:
-        print("\nCPU won the round by choosing",cm)
-        cs=cs+1
+        print(f"\nCPU won the round by choosing {cpu_move}")
+        cpu_score += 1
     elif winner == 2:
         print("\nPlayer won the round!")
-        ps=ps+1
+        player_score += 1
     else:
-        print("Custom_ERROR-02 : Scoreboard function recieved explicit values")
-        raise SystemExit(0)
+        print("It's a draw!")
+
     print("\nSession Score:")
-    print("Player : ",ps)
-    print("CPU : ",cs)
-    return cs, ps
+    print("Player:", player_score)
+    print("CPU:", cpu_score)
 
-#Variable declaration
-MoveSet = [1,2,3]
-Cmove=0
-Pmove=0
-Cscore=0
-Pscore=0
+    return player_score, cpu_score
 
-#Driver Code
-while True:
-    Cmove,Pmove,cpumove=game()
-    winner=decisive(Cmove,Pmove)
-    while winner == 0:
-        print("WoW! A Draw!\nBoth Player and CPU have chosen",cpumove)
-        print("let's go again")
-        Cmove,Pmove,cpumove=game()
-        winner=decisive(Cmove,Pmove)
-    sleep(0.13)
-    cmCache=cpumove;
-    print("CPU - ",cmCache)
-    RoundWinner=winner
-    cs,ps=Scoreboard(RoundWinner,cmCache,Cscore,Pscore)
-    Cscore=cs; Pscore=ps
-    input("<<< PRESS ENTER TO CONTINUE >>>");
+def play_game():
+    """
+    Plays a full game of Rock, Paper, Scissors.
+    """
+    player_score = 0
+    cpu_score = 0
+
+    while True:
+        round_result = game()
+        cpu_move = round_result['cpu_move']
+        player_move = round_result['player_move']
+        winner = determine_winner(cpu_move, player_move)
+
+        while winner == 0:
+            print("It's a draw! Let's play again.")
+            round_result = game()
+            cpu_move = round_result['cpu_move']
+            player_move = round_result['player_move']
+            winner = determine_winner(cpu_move, player_move)
+
+        player_score, cpu_score = update_scoreboard(winner, cpu_move, player_score, cpu_score)
+
+        input("<<< PRESS ENTER TO CONTINUE >>>")
+
+if __name__ == "__main__":
+    print("\n\n\nRock Paper Scissors\n\npresss Ctrl+. when you feel like exiting the game.")
+    input("\n\n<<PRESS ENTER TO BEGIN>>\n")
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+    play_game()
