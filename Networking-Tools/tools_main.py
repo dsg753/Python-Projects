@@ -2,20 +2,22 @@
 import subprocess
 import tools
 
+# Define log_file variable
+log_file = tools.log_file
 
 # Function for displaying menu
 def Display_Menu():
-    header = """
+    header = f"""
     ___________________________
     |                          |
     |  Basic Networking Tools  |
     |_____________   __________|
-                          \  \                 
-                            ^_ _^              
-                            (o o)\_________    
-                            (_ _)\         )/\/
-                              U   ||----W||    
-                                  ||     ||    
+                  \  \                 
+                    ^_ _^              
+                    (o o)\_________    
+                    (_ _)\         )/\/
+                      U   ||----W||    
+                          ||     ||    
 
     ### Available Tools:
         [1] Locate an IP address
@@ -23,10 +25,13 @@ def Display_Menu():
         [3] Ping a host or IP address
         [4] Port Scanner
         [5] Traceroute
-        [6] Exit 
+        [6] Display Historical Logs
+        [7] Exit
+
+    Logs are saved in: {log_file}
     
     * Type <clear> to clear previous commands
-    * Type <q> or to abort operation of a tool
+    * Type <q> to abort operation of a tool
 
     """
     print(header)
@@ -80,7 +85,15 @@ def option_5():
 
 def option_6():
     """
-    Option 6 --> Exit
+    Option 6 --> Display Historical Logs
+    """
+    tools.display_logs()
+    Display_Menu()
+    Home()
+
+def option_7():
+    """
+    Option 7 --> Exit
     """
     quit()
 
@@ -90,7 +103,7 @@ def Home():
     Home of the program is selecting an option from available options.
     """
     # Available options' numbers as shown in the menu
-    available_options = (1, 2, 3, 4, 5, 6)
+    available_options = (1, 2, 3, 4, 5, 6, 7)
     while True:
         try:
             selected_option = input("\nEnter your option\n>>> ")
@@ -124,6 +137,8 @@ def Home():
         option_5()
     elif selected_option == 6:
         option_6()
+    elif selected_option == 7:
+        option_7()
 
 
 

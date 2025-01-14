@@ -35,7 +35,8 @@ import socket
 import json
 import os
 import re
-
+import logging
+from datetime import datetime
 
 # Make the foreground color of the terminal green.
 subprocess.call("color A", shell=True)
@@ -43,6 +44,19 @@ subprocess.call("color A", shell=True)
 # A pattern to validate an IP address.
 ip_pattern = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
 
+log_file = os.path.join(os.getcwd(), "network_tools_logs.txt")
+logging.basicConfig(
+    filename=log_file,
+    level=logging.INFO,
+    format='%(asctime)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+def log_operation(operation_name, details):
+    """
+    Log the operation with its name and details.
+    """
+    logging.info(f"Operation: {operation_name} | Details: {details}")
 
 # Tools
 def locate_ip():
@@ -88,7 +102,7 @@ def locate_ip():
     print("You got the files containing data about the given IP address.")
     print("Please check your system desktop.")
     input("\nPress any key to continue...")
-
+    log_operation("IP Locator", f"Located IP: {IP_address}")
 
 def get_ip():
     """
@@ -135,7 +149,7 @@ def ping():
     command = f"ping {parameter} 5 {host}"
     subprocess.call(command) == 0
     input("\nPress any key to continue...")
-
+    log_operation("Ping", f"Pinged host: {host}")
 def traceroute():
     """
     Trace the route packets take to a given domain or IP address.
@@ -161,9 +175,8 @@ def traceroute():
         subprocess.call(command, shell=True)
     except Exception as e:
         print(f"An error occurred during traceroute: {e}")
-    
     input("\nPress any key to continue...")
-
+    log_operation("Traceroute", f"Tracerouted host: {host}")
 def port_scanner():
     """
     Scan ports on a certain host.
@@ -238,3 +251,4 @@ def port_scanner():
     print("Time taken: ", time_taken)
     print("_"*60)
     input("\nPress any key to continue...")
+    log_operation("Port Scanner", f"Scanned host: {host} on ports {port_range[0]}-{port_range[1]}")
