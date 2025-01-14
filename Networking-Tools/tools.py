@@ -136,6 +136,33 @@ def ping():
     subprocess.call(command) == 0
     input("\nPress any key to continue...")
 
+def traceroute():
+    """
+    Trace the route packets take to a given domain or IP address.
+    """
+    subprocess.call("cls", shell=True)
+    # Banner of the tool
+    banner = pyfiglet.figlet_format("TRACEROUTE")
+    print(banner)
+    # Get the host to trace
+    host = input("Enter a valid domain name or IP address: ")
+    if host.lower() == 'q':
+        quit()
+    
+    # Check the operating system to use the appropriate traceroute command
+    if platform.system().lower() == "windows":
+        command = f"tracert {host}"
+    else:
+        command = f"traceroute {host}"
+    
+    print("\nTracing route...\n")
+    try:
+        # Execute the traceroute command
+        subprocess.call(command, shell=True)
+    except Exception as e:
+        print(f"An error occurred during traceroute: {e}")
+    
+    input("\nPress any key to continue...")
 
 def port_scanner():
     """
